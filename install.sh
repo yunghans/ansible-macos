@@ -59,7 +59,7 @@ if [ -d "~/personal/laptop-setup" ]; then
   rm -rf ~/personal/laptop-setup
 fi
 fancy_echo "Cloning laptop repo ..."
-git clone https://github.com/yunghans/ansible-macos
+git clone https://github.com/yunghans/ansible-macos ~/personal/laptop-setup
 
 fancy_echo "Changing to ~/personal/laptop-setup repo dir ..."
 cd ~/personal/laptop-setup
