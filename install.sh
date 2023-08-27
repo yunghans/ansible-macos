@@ -37,3 +37,33 @@ if ! command -v cc >/dev/null; then
 else
   fancy_echo "Xcode already installed. Skipping."
 fi
+
+if ! command -v brew >/dev/null; then
+  fancy_echo "Installing Homebrew..."
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" </dev/null
+else
+  fancy_echo "Homebrew already installed. Skipping."
+fi
+
+# [Install Ansible](http://docs.ansible.com/intro_installation.html).
+if ! command -v ansible >/dev/null; then
+  fancy_echo "Installing Ansible ..."
+  brew install ansible 
+else
+  fancy_echo "Ansible already installed. Skipping."
+fi
+
+# Clone the repository to your local drive.
+if [ -d "~/personal/laptop-setup" ]; then
+  fancy_echo "laptop-setup repo dir exists. Removing ..."
+  rm -rf ~/personal/laptop-setup
+fi
+fancy_echo "Cloning laptop repo ..."
+git clone https://github.com/yunghans/ansible-macos
+
+fancy_echo "Changing to ~/personal/laptop-setup repo dir ..."
+cd ~/personal/laptop-setup
+
+# Run this from the same directory as this README file. 
+fancy_echo "Running ansible playbook ..."
+ansible-playbook playbook.yml -i hosts --ask-sudo-pass -vvvv 
