@@ -56,10 +56,12 @@ fi
 # Clone the repository to your local drive.
 if [ -d "~/personal/laptop-setup" ]; then
   fancy_echo "laptop-setup repo dir exists. Removing ..."
-  rm -rf ~/personal/laptop-setup
+  cd ~/personal/laptop-setup
+  git pull
+else 
+    fancy_echo "Cloning laptop repo ..."
+    git clone https://github.com/yunghans/ansible-macos ~/personal/laptop-setup
 fi
-fancy_echo "Cloning laptop repo ..."
-git clone https://github.com/yunghans/ansible-macos ~/personal/laptop-setup
 
 fancy_echo "Changing to ~/personal/laptop-setup repo dir ..."
 cd ~/personal/laptop-setup
