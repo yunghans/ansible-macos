@@ -1,0 +1,119 @@
+---
+- hosts: localhost
+  connection: local
+  become: false
+
+  vars:
+    applications:
+      - arc
+      - atom # sublime without annoying popup | https://atom.io/download/mac
+      - aws-vault
+      - beekeeper-studio
+      - dbeaver-community
+      - drawio
+      - figma
+      - firefox
+      - flutter
+      - font-jetbrains-mono
+      - font-menlo-for-powerline
+      - grandperspective
+      - google-chrome
+      - google-drive
+      - handbrake
+      - iterm2
+      - jetbrains-toolbox
+      - karabiner-elements
+      - licecap
+      - logseq
+      - musescore
+      # # - https://raw.githubusercontent.com/Homebrew/homebrew-cask/ef122dfdbe30ad450576d2d1dc8304aa2a77d277/Casks/affinity-photo.rb
+      - openvpn-connect
+      - opera
+      - obs
+      - obsidian
+      - postman
+      - microsoft-office
+      - microsoft-teams
+      - miniforge
+      - mysqlworkbench
+      - reaper
+      - session-manager-plugin
+      - shotcut
+      - slack
+      - telegram-desktop
+      - visual-studio-code
+      - vlc
+      - zoom
+
+    brew_utils:
+      - awscli
+      - colima
+      - coredns
+      - ffmpeg
+      - docker
+      - docker-compose
+      - docker-buildx
+      - glab
+      - hadolint
+      - harlequin
+      - jd
+      - jq
+      - graphviz
+      - go
+      - kubernetes-cli
+      - ncdu
+      - nvm
+      - minio
+      - minio-mc
+      - mysql
+      - postgresql@16
+      - tfenv  # manages terraform versions; don't brew install terraform directly
+      - terragrunt
+      - yarn
+      - yt-dlp
+      - wget
+      - yq
+      - zsh-autosuggestions
+
+    brew_taps:
+      - hashicorp/tap
+
+  tasks:
+    - name: Check Homebrew is installed
+      stat: path=/opt/homebrew/bin/brew
+      register: brew_installed
+
+    - name: Install Homebrew
+      shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      when: brew_installed.stat.exists == false
+
+    - name: Remove deprecated Homebrew taps
+      homebrew_tap:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - homebrew/cask-fonts
+        - homebrew/services
+      ignore_errors: true
+
+    - name: Update Homebrew
+      homebrew:
+        update_homebrew: true
+
+    ### UTILS
+
+    - name: Install required Homebrew Taps
+      homebrew_tap:
+        name: "{{ brew_taps }}"
+        state: present
+
+    - name: Install apps(casks) with Homebrew Cask
+      homebrew_cask:
+        name: "{{ applications }}"
+        state: present
+        install_options: no-quarantine
+
+    - name: Install libraries/utils with homebrew
+      homebrew:
+        name: "{{ brew_utils }}"
+        state: present

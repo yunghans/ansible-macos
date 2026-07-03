@@ -5,12 +5,9 @@
 #  1. Installs:
 #    - xcode
 #    - homebrew
-#    - ansible (via brew) 
-#    - a few ansible galaxy playbooks (zsh, homebrew, cask etc)  
+#    - ansible (via brew)
 #  2. Kicks off the ansible playbook:
-#    - main.yml
-#
-# It begins by asking for your sudo password:
+#    - playbook.yml
 
 fancy_echo() {
   local fmt="$1"; shift
@@ -19,53 +16,43 @@ fancy_echo() {
   printf "\n$fmt\n" "$@"
 }
 
-fancy_echo "Boostrapping ..."
+fancy_echo "Bootstrapping ..."
 
 trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
 set -e
 
-# Here we go.. ask for the administrator password upfront and run a
-# keep-alive to update existing `sudo` time stamp until script has finished
-# sudo -v
-# while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
 # Ensure Apple's command line tools are installed
 if ! command -v cc >/dev/null; then
   fancy_echo "Installing xcode ..."
-  xcode-select --install 
+  xcode-select --install
 else
   fancy_echo "Xcode already installed. Skipping."
 fi
 
 if ! command -v brew >/dev/null; then
   fancy_echo "Installing Homebrew..."
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" </dev/null
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 else
   fancy_echo "Homebrew already installed. Skipping."
 fi
 
-# [Install Ansible](http://docs.ansible.com/intro_installation.html).
+# Install Ansible
 if ! command -v ansible >/dev/null; then
   fancy_echo "Installing Ansible ..."
-  brew install ansible 
+  brew install ansible
 else
   fancy_echo "Ansible already installed. Skipping."
 fi
 
-# Clone the repository to your local drive.
-if [ -d "~/personal/laptop-setup" ]; then
-  fancy_echo "laptop-setup repo dir exists. Removing ..."
-  cd ~/personal/laptop-setup
-  git pull
-else 
-    fancy_echo "Cloning laptop repo ..."
-    git clone https://github.com/yunghans/ansible-macos ~/personal/laptop-setup
+# Clone or update the repository
+if [ -d "$HOME/personal/ansible-macos" ]; then
+  fancy_echo "ansible-macos repo exists. Pulling latest ..."
+  git -C "$HOME/personal/ansible-macos" pull
+else
+  fancy_echo "Cloning ansible-macos repo ..."
+  git clone https://github.com/yunghans/ansible-macos "$HOME/personal/ansible-macos"
 fi
 
-fancy_echo "Changing to ~/personal/laptop-setup repo dir ..."
-cd ~/personal/laptop-setup
-
-# Run this from the same directory as this README file. 
 fancy_echo "Running ansible playbook ..."
-ansible-playbook playbook.yml -i hosts --ask-sudo-pass -vvvv 
+ansible-playbook "$HOME/personal/ansible-macos/playbook.yml" -vv
