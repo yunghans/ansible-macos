@@ -40,7 +40,7 @@
       - session-manager-plugin
       - shotcut
       - slack
-      - telegram-desktop
+      - telegram
       - visual-studio-code
       - vlc
       - zoom
