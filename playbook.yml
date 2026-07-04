@@ -111,9 +111,11 @@
 
     - name: Install apps(casks) with Homebrew Cask
       homebrew_cask:
-        name: "{{ applications }}"
+        name: "{{ item }}"
         state: present
         accept_external_apps: true
+      with_items: "{{ applications }}"
+      ignore_errors: true
 
     - name: Install libraries/utils with homebrew
       homebrew:

@@ -17,5 +17,5 @@ That's it. It will install Xcode CLI tools, Homebrew, Ansible, and then run the 
 If you've already set up your Mac and want to sync any new additions to the playbook:
 
 ```sh
-ansible-playbook ~/personal/ansible-macos/playbook.yml -vv --ask-become-pass
+ansible-playbook ~/personal/ansible-macos/playbook.yml -vv
 ```

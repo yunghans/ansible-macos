@@ -22,9 +22,6 @@ trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
 set -e
 
-# Cache sudo credentials upfront so Homebrew cask installs don't fail mid-run
-sudo -v
-
 
 # Ensure Apple's command line tools are installed
 if ! command -v cc >/dev/null; then
