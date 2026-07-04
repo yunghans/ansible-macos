@@ -55,4 +55,4 @@ else
 fi
 
 fancy_echo "Running ansible playbook ..."
-ansible-playbook "$HOME/personal/ansible-macos/playbook.yml" -vv
+ansible-playbook "$HOME/personal/ansible-macos/playbook.yml" -vv --ask-become-pass
