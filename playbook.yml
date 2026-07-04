@@ -119,3 +119,17 @@
       homebrew:
         name: "{{ brew_utils }}"
         state: present
+
+    ### DOTFILES
+
+    - name: Ensure ~/.config/karabiner directory exists
+      file:
+        path: "{{ lookup('env','HOME') }}/.config/karabiner"
+        state: directory
+
+    - name: Symlink Karabiner config
+      file:
+        src: "{{ lookup('env','HOME') }}/personal/ansible-macos/dotfiles/karabiner/karabiner.json"
+        dest: "{{ lookup('env','HOME') }}/.config/karabiner/karabiner.json"
+        state: link
+        force: true
