@@ -109,14 +109,6 @@
       with_items: "{{ brew_taps }}"
       changed_when: false
 
-    - name: Ensure /Applications is writable by current user
-      file:
-        path: /Applications
-        state: directory
-        owner: "{{ lookup('env','USER') }}"
-        mode: "0755"
-      become: true
-
     - name: Install apps(casks) with Homebrew Cask
       homebrew_cask:
         name: "{{ applications }}"

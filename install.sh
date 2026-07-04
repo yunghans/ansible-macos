@@ -22,6 +22,10 @@ trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
 set -e
 
+# Cache sudo credentials upfront so Homebrew cask installs don't fail mid-run
+sudo -v
+
+
 # Ensure Apple's command line tools are installed
 if ! command -v cc >/dev/null; then
   fancy_echo "Installing xcode ..."
@@ -55,4 +59,4 @@ else
 fi
 
 fancy_echo "Running ansible playbook ..."
-ansible-playbook "$HOME/personal/ansible-macos/playbook.yml" -vv --ask-become-pass
+ansible-playbook "$HOME/personal/ansible-macos/playbook.yml" -vv
