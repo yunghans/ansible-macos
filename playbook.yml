@@ -116,6 +116,13 @@
         accept_external_apps: true
       with_items: "{{ applications }}"
       ignore_errors: true
+      register: cask_results
+
+    - name: Show manual install commands for failed casks
+      debug:
+        msg: "FAILED - install manually: brew install --cask {{ item.item }}"
+      with_items: "{{ cask_results.results }}"
+      when: item.failed
 
     - name: Install libraries/utils with homebrew
       homebrew:
