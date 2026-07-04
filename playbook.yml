@@ -94,6 +94,7 @@
       with_items:
         - homebrew/cask-fonts
         - homebrew/services
+        - warrensbox/tap
       ignore_errors: true
 
     - name: Update Homebrew
@@ -107,10 +108,16 @@
         name: "{{ brew_taps }}"
         state: present
 
+    - name: Trust required Homebrew Taps
+      command: brew trust {{ item }}
+      with_items: "{{ brew_taps }}"
+      changed_when: false
+
     - name: Install apps(casks) with Homebrew Cask
       homebrew_cask:
         name: "{{ applications }}"
         state: present
+        accept_external_apps: true
 
     - name: Install libraries/utils with homebrew
       homebrew:
