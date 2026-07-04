@@ -6,7 +6,6 @@
   vars:
     applications:
       - arc
-      - atom # sublime without annoying popup | https://atom.io/download/mac
       - aws-vault
       - beekeeper-studio
       - dbeaver-community
