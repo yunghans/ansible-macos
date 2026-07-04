@@ -22,6 +22,10 @@ trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
 set -e
 
+# Cache sudo credentials and keep alive for the duration of the script
+sudo -v
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
 
 # Ensure Apple's command line tools are installed
 if ! command -v cc >/dev/null; then
