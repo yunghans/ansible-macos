@@ -111,7 +111,6 @@
       homebrew_cask:
         name: "{{ applications }}"
         state: present
-        install_options: no-quarantine
 
     - name: Install libraries/utils with homebrew
       homebrew:
