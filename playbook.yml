@@ -27,7 +27,6 @@
       - musescore
       # # - https://raw.githubusercontent.com/Homebrew/homebrew-cask/ef122dfdbe30ad450576d2d1dc8304aa2a77d277/Casks/affinity-photo.rb
       - openvpn-connect
-      - opera
       - obs
       - obsidian
       - postman
@@ -35,9 +34,7 @@
       - microsoft-teams
       - miniforge
       - mysqlworkbench
-      - reaper
       - session-manager-plugin
-      - shotcut
       - slack
       - telegram
       - visual-studio-code
