@@ -118,16 +118,13 @@
       ignore_errors: true
       register: cask_results
 
-    - name: Show manual install commands for failed casks
-      debug:
-        msg: "FAILED - install manually: brew install --cask {{ item.item }}"
-      with_items: "{{ cask_results.results }}"
-      when: item.failed
-
     - name: Install libraries/utils with homebrew
       homebrew:
-        name: "{{ brew_utils }}"
+        name: "{{ item }}"
         state: present
+      with_items: "{{ brew_utils }}"
+      ignore_errors: true
+      register: formula_results
 
     ### DOTFILES
 
@@ -142,3 +139,21 @@
         dest: "{{ lookup('env','HOME') }}/.config/karabiner/karabiner.json"
         state: link
         force: true
+
+    ### SUMMARY
+
+    - name: Summary of failed installs
+      debug:
+        msg: |
+          ============================================================
+          The following failed and need to be installed manually:
+          {% for item in cask_results.results if item.failed %}
+            brew install --cask {{ item.item }}
+          {% endfor %}
+          {% for item in formula_results.results if item.failed %}
+            brew install {{ item.item }}
+          {% endfor %}
+          ============================================================
+      when: >
+        cask_results.results | selectattr('failed') | list | length > 0 or
+        formula_results.results | selectattr('failed') | list | length > 0
