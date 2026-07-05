@@ -44,6 +44,12 @@ ln -sf "$HOME/personal/ansible-macos/dotfiles/karabiner/karabiner.json" \
   "$HOME/.config/karabiner/karabiner.json"
 
 fancy_echo "Running Brewfile ..."
-brew bundle --file="$HOME/personal/ansible-macos/Brewfile"
+if [ "$1" = "--upgrade" ]; then
+  fancy_echo "Upgrade mode: will upgrade already installed packages ..."
+  brew bundle install --file="$HOME/personal/ansible-macos/Brewfile" --upgrade || true
+else
+  fancy_echo "Install mode: skipping already installed packages ..."
+  brew bundle install --file="$HOME/personal/ansible-macos/Brewfile" --no-upgrade || true
+fi
 
 fancy_echo "Done!"
