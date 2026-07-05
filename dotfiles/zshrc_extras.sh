@@ -50,6 +50,22 @@ trust_cloudflare() {
   cp "$cert_bundle" "$HOME/.docker/certs.d/ca.crt"
   echo "Copied to Docker certs."
 
+  # Set env vars globally via launchctl so GUI apps (VS Code, Electron) pick them up
+  launchctl setenv NODE_EXTRA_CA_CERTS "$cert_bundle"
+  launchctl setenv REQUESTS_CA_BUNDLE "$cert_bundle"
+  launchctl setenv SSL_CERT_FILE "$cert_bundle"
+  launchctl setenv CURL_CA_BUNDLE "$cert_bundle"
+  echo "Set CA env vars in launchctl (active until next reboot)."
+
+  # Install LaunchAgent so vars persist across reboots
+  PLIST_SRC="$HOME/personal/ansible-macos/dotfiles/launchagents/com.user.caenv.plist"
+  PLIST_DEST="$HOME/Library/LaunchAgents/com.user.caenv.plist"
+  if [ -f "$PLIST_SRC" ]; then
+    cp "$PLIST_SRC" "$PLIST_DEST"
+    launchctl load "$PLIST_DEST" 2>/dev/null || true
+    echo "LaunchAgent installed: CA env vars set at every login."
+  fi
+
   echo "Done. Run 'source ~/.zshrc' to reload env vars."
 }
 
