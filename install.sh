@@ -60,17 +60,44 @@ source "$HOME/personal/ansible-macos/dotfiles/zshrc_extras.sh"
 ZSHRC
 fi
 
-# Export for current session
+# Export for current session and inject into launchd so GUI apps (VS Code) inherit them
 CERT_BUNDLE="$HOME/personal/ansible-macos/certs/Cloudflare_CA.pem"
 export NODE_EXTRA_CA_CERTS="$CERT_BUNDLE"
 export REQUESTS_CA_BUNDLE="$CERT_BUNDLE"
 export SSL_CERT_FILE="$CERT_BUNDLE"
 export CURL_CA_BUNDLE="$CERT_BUNDLE"
+launchctl setenv NODE_EXTRA_CA_CERTS "$CERT_BUNDLE"
+launchctl setenv REQUESTS_CA_BUNDLE "$CERT_BUNDLE"
+launchctl setenv SSL_CERT_FILE "$CERT_BUNDLE"
+launchctl setenv CURL_CA_BUNDLE "$CERT_BUNDLE"
 
 # Run trust function for this session
 fancy_echo "Trusting Cloudflare CA certificates ..."
 . "$EXTRAS"
 trust_cloudflare
+
+# Configure VS Code to not enforce strict SSL (needed for Cloudflare SSL inspection)
+VSCODE_SETTINGS="$HOME/Library/Application Support/Code/User/settings.json"
+mkdir -p "$HOME/Library/Application Support/Code/User"
+if [ -f "$VSCODE_SETTINGS" ]; then
+  if ! grep -q "proxyStrictSSL" "$VSCODE_SETTINGS"; then
+    # Insert before last closing brace
+    python3 -c "
+import json
+with open('$VSCODE_SETTINGS') as f:
+    s = json.load(f)
+s['http.proxyStrictSSL'] = False
+with open('$VSCODE_SETTINGS', 'w') as f:
+    json.dump(s, f, indent=2)
+"
+    echo "Set http.proxyStrictSSL = false in VS Code settings."
+  else
+    echo "VS Code proxyStrictSSL already configured. Skipping."
+  fi
+else
+  printf '{\n  "http.proxyStrictSSL": false\n}\n' > "$VSCODE_SETTINGS"
+  echo "Created VS Code settings with http.proxyStrictSSL = false."
+fi
 
 fancy_echo "Running Brewfile ..."
 if [ "$1" = "--upgrade" ]; then
@@ -82,3 +109,4 @@ else
 fi
 
 fancy_echo "Done!"
+echo "Run 'source ~/.zshrc' to apply CA env vars to your current terminal session."

@@ -50,6 +50,13 @@ trust_cloudflare() {
   cp "$cert_bundle" "$HOME/.docker/certs.d/ca.crt"
   echo "Copied to Docker certs."
 
+  # Inject into launchd user session so GUI apps (VS Code launched from Dock) also see the vars
+  launchctl setenv NODE_EXTRA_CA_CERTS "$cert_bundle"
+  launchctl setenv REQUESTS_CA_BUNDLE "$cert_bundle"
+  launchctl setenv SSL_CERT_FILE "$cert_bundle"
+  launchctl setenv CURL_CA_BUNDLE "$cert_bundle"
+  echo "Set CA env vars in launchctl (persists until reboot)."
+
   echo "Done. Restart your terminal or run 'source ~/.zshrc' to reload env vars."
 }
 
