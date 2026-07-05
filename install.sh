@@ -70,7 +70,7 @@ export CURL_CA_BUNDLE="$CERT_BUNDLE"
 # Run trust function for this session
 fancy_echo "Trusting Cloudflare CA certificates ..."
 . "$EXTRAS"
-trust-cloudflare
+trust_cloudflare
 
 fancy_echo "Running Brewfile ..."
 if [ "$1" = "--upgrade" ]; then

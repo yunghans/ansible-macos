@@ -4,7 +4,7 @@
 CERT_BUNDLE="$HOME/personal/ansible-macos/certs/Cloudflare_CA.pem"
 
 # Trust Cloudflare CA in all tools — safe to run multiple times
-trust-cloudflare() {
+trust_cloudflare() {
   local cert_bundle="$CERT_BUNDLE"
 
   if [ ! -f "$cert_bundle" ]; then
@@ -52,3 +52,6 @@ trust-cloudflare() {
 
   echo "Done. Run 'source ~/.zshrc' to reload env vars."
 }
+
+# Alias for convenience in interactive shells (zsh allows hyphens)
+alias trust-cloudflare=trust_cloudflare
