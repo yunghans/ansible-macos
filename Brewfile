@@ -76,7 +76,6 @@ cask "zoom"
 
 # VS Code Extensions
 vscode "42crunch.vscode-openapi"
-vscode "amazonwebservices.amazon-q-vscode"
 vscode "amazonwebservices.aws-toolkit-vscode"
 vscode "anthropic.claude-code"
 vscode "docker.docker"
