@@ -43,6 +43,35 @@ mkdir -p "$HOME/.config/karabiner"
 ln -sf "$HOME/personal/ansible-macos/dotfiles/karabiner/karabiner.json" \
   "$HOME/.config/karabiner/karabiner.json"
 
+# Source dotfile extras and set up CA trust
+EXTRAS="$HOME/personal/ansible-macos/dotfiles/zshrc_extras.sh"
+
+# Add env vars and source extras in .zshrc if not already done
+if ! grep -q "zshrc_extras" "$HOME/.zshrc" 2>/dev/null; then
+  CERT_BUNDLE="$HOME/personal/ansible-macos/certs/Cloudflare_CA.pem"
+  cat >> "$HOME/.zshrc" << ZSHRC
+
+# Cloudflare CA trust and extras — added by install.sh
+export NODE_EXTRA_CA_CERTS="$CERT_BUNDLE"
+export REQUESTS_CA_BUNDLE="$CERT_BUNDLE"
+export SSL_CERT_FILE="$CERT_BUNDLE"
+export CURL_CA_BUNDLE="$CERT_BUNDLE"
+source "$HOME/personal/ansible-macos/dotfiles/zshrc_extras.sh"
+ZSHRC
+fi
+
+# Export for current session
+CERT_BUNDLE="$HOME/personal/ansible-macos/certs/Cloudflare_CA.pem"
+export NODE_EXTRA_CA_CERTS="$CERT_BUNDLE"
+export REQUESTS_CA_BUNDLE="$CERT_BUNDLE"
+export SSL_CERT_FILE="$CERT_BUNDLE"
+export CURL_CA_BUNDLE="$CERT_BUNDLE"
+
+# Run trust function for this session
+fancy_echo "Trusting Cloudflare CA certificates ..."
+. "$EXTRAS"
+trust-cloudflare
+
 fancy_echo "Running Brewfile ..."
 if [ "$1" = "--upgrade" ]; then
   fancy_echo "Upgrade mode: will upgrade already installed packages ..."

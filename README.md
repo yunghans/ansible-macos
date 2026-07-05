@@ -14,10 +14,16 @@ That's it. It will install Xcode CLI tools, Homebrew, clone this repo, and run t
 
 ## Updating an existing machine
 
-If you've already set up your Mac and want to sync any new additions:
+Install only missing apps (skips already installed, no downloads):
 
 ```sh
 sh ~/personal/ansible-macos/install.sh
+```
+
+Upgrade everything to the latest version:
+
+```sh
+sh ~/personal/ansible-macos/install.sh --upgrade
 ```
 
 ## Adding apps

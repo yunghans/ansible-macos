@@ -7,6 +7,10 @@
     applications:
       - arc
       - aws-vault
+      - chatgpt
+      - codex
+      - lm-studio
+      - spotify
       - beekeeper-studio
       - dbeaver-community
       - drawio
